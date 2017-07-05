@@ -21,82 +21,24 @@ var p1wins = 0;
 var p1losses = 0;
 var p2wins = 0;
 var p2losses = 0;
-var turns = 1;
-var playersData = {
-  player_1: {
-    choice: p1choice,
-    losses: p1losses,
-    name: p1name,
-    wins: p1wins
-    }, 
-  player_2: {
-    choice: p2choice,
-    losses: p2losses,
-    name: p2name,
-    wins: p2wins
-  }
-};
-
-playersRef.push(playersData);
-
-$("#player1Choice").on("value", function(){
-  playerRef.child(player_1).set({
-    choice: p1choice
-  });
-});
-
-$("#player2Choice").on("value", function(){
-  playerRef.child(player_2).set({
-    choice: p2choice
-  });
-});
-
-$("#p1losses").on("value", function(){
-  playerRef.child(player_1).set({
-    losses: p1losses
-  });
-});
-
-$("#p2losses").on("value", function(){
-  playerRef.child(player_2).set({
-    losses: p2losses
-  });
-});
-
-$("#player1").on("value", function(){
-  playerRef.child(player_1).set({
-    name: p1name
-  });
-});
-
-$("#player2").on("value", function(){
-  playerRef.child(player_2).set({
-    name: p2name
-  });
-});
-
-$("#p1wins").on("value", function(){
-  playerRef.child(player_1).set({
-    wins: p1wins
-  });
-});
-
-$("#p2wins").on("value", function(){
-  playerRef.child(player_2).set({
-    wins: p2wins
-  });
-});
-
-/*playersRef.on("value", function(snapshot){
-  console.log(snapshot.val());
-
-})*/
+var gameTurns = 1;
+var player_1;
+var player_2;
+var choice = "";
+var losses = 0;
+var name = "";
+var wins = 0;
 
 function firstPlayer(){  
   $("#add-player").on("click", function(event){
     event.preventDefault();
     p1name = $("#player-name").val().trim();
     console.log("This is p1: " + p1name)
+    playersRef.child("player_1").update({
+      losses: 0,
+      name: p1name,
+      wins: 0
+    });
     $("#player1").text(p1name);          
     $("#player-name").val("");  
     $("#add-player").off("click");
@@ -109,6 +51,11 @@ function secondPlayer(){
     event.preventDefault();
     p2name = $("#player-name").val().trim();
     console.log("This is p2: " + p2name)
+    playersRef.child("player_2").update({
+      losses: 0,
+      name: p2name,
+      wins: 0
+    });
     $("#player2").text(p2name);
     $("#player-name").val("");  
     $("#add-player").off("click");
@@ -117,7 +64,7 @@ function secondPlayer(){
 };
 
 function startOver(){
-  turns++;
+  gameTurns++;
   setTimeout(newGame, 3000);
 };
 
@@ -155,10 +102,25 @@ function evaluation(x, y) {
     }
   }
 
-  $("#p1wins").html(p1wins);
+  $("#p1wins").html(p1wins); 
+  playersRef.child("player_1").update({
+    wins: p1wins
+  });  
+
   $("#p1losses").html(p1losses);   
-  $("#p2wins").html(p2wins);
-  $("#p2losses").html(p2losses); 
+  playersRef.child("player_1").update({
+    losses: p1losses
+  });
+ 
+  $("#p2wins").html(p2wins);  
+  playersRef.child("player_2").update({
+    wins: p2wins
+  });  
+
+  $("#p2losses").html(p2losses);  
+  playersRef.child("player_2").update({
+    losses: p2losses
+  }); 
 
   if (p1iteration === true) {
     $("#player").html(p1name);
@@ -184,6 +146,9 @@ function newGame(){
     event.preventDefault();
     p1choice = $(this).html();
     console.log(p1choice);
+    playersRef.child("player_1").update({
+      choice: p1choice
+    });
     $("#player1Choice").html("<span class='highLight'>" + p1choice + "</span>");
 
     for(var j = 0; j < gameChoices.length; j++) {
@@ -193,6 +158,9 @@ function newGame(){
       event.preventDefault();
       p2choice = $(this).html();
       console.log(p2choice);
+      playersRef.child("player_2").update({
+        choice: p2choice
+      });
       $("#player2Choice").html("<span class='highLight'>" + p2choice + "</span>");
       evaluation(p1choice, p2choice);
     });
