@@ -1,0 +1,70 @@
+* {
+	box-sizing: border-box;
+}
+
+h1 {
+	background: #0066ff;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+	font-size: 20px;
+}
+
+body {
+	background-color: #80b3ff;
+}
+
+#form-entry {
+	text-align: center;
+	font-size: 20px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#container {
+	margin: 0 auto;
+	height: 150px;
+	width: 650px;
+}
+
+.box {
+	padding: 10px;
+	margin: 10px;	
+	float: left;
+	display: inline-block;
+	height: 100%;
+	width: 30%;
+	border: 1px solid #000000;
+	text-align: center;
+	position: relative;
+}
+
+.score {
+	position: absolute;
+	top: 120px;
+	left: 30px;
+}
+
+#player1, #player2 {
+	padding-bottom: 8px;
+}
+
+li {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	list-style-type: none;
+}
+
+.highLight {
+	font-size: 50px;
+	line-height: 70px;
+}
+
+#player {
+	padding-top: 10px;
+	font-size: 50px;
+}
+
+#results {
+	font-size: 50px;
+}
