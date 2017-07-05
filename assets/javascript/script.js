@@ -1,3 +1,17 @@
+var config = {
+    apiKey: "AIzaSyAdeN55JOHlZn7gB9-vgollpibvKG99DvA",
+    authDomain: "rps-multiplayer-60d85.firebaseapp.com",
+    databaseURL: "https://rps-multiplayer-60d85.firebaseio.com",
+    projectId: "rps-multiplayer-60d85",
+    storageBucket: "rps-multiplayer-60d85.appspot.com",
+    messagingSenderId: "807690137599"
+  };
+
+firebase.initializeApp(config);
+
+var playersRef = firebase.database().ref("players");
+var chatRef = firebase.database().ref("chat");
+var turnsRef = firebase.database().ref("turns");
 var gameChoices = ["Rock", "Paper", "Scissors"];
 var p1name = "";
 var p2name = "";
@@ -8,6 +22,75 @@ var p1losses = 0;
 var p2wins = 0;
 var p2losses = 0;
 var turns = 1;
+var playersData = {
+  player_1: {
+    choice: p1choice,
+    losses: p1losses,
+    name: p1name,
+    wins: p1wins
+    }, 
+  player_2: {
+    choice: p2choice,
+    losses: p2losses,
+    name: p2name,
+    wins: p2wins
+  }
+};
+
+playersRef.push(playersData);
+
+$("#player1Choice").on("value", function(){
+  playerRef.child(player_1).set({
+    choice: p1choice
+  });
+});
+
+$("#player2Choice").on("value", function(){
+  playerRef.child(player_2).set({
+    choice: p2choice
+  });
+});
+
+$("#p1losses").on("value", function(){
+  playerRef.child(player_1).set({
+    losses: p1losses
+  });
+});
+
+$("#p2losses").on("value", function(){
+  playerRef.child(player_2).set({
+    losses: p2losses
+  });
+});
+
+$("#player1").on("value", function(){
+  playerRef.child(player_1).set({
+    name: p1name
+  });
+});
+
+$("#player2").on("value", function(){
+  playerRef.child(player_2).set({
+    name: p2name
+  });
+});
+
+$("#p1wins").on("value", function(){
+  playerRef.child(player_1).set({
+    wins: p1wins
+  });
+});
+
+$("#p2wins").on("value", function(){
+  playerRef.child(player_2).set({
+    wins: p2wins
+  });
+});
+
+/*playersRef.on("value", function(snapshot){
+  console.log(snapshot.val());
+
+})*/
 
 function firstPlayer(){  
   $("#add-player").on("click", function(event){
