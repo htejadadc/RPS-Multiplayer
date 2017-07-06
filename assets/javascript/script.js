@@ -24,21 +24,28 @@ var p2losses = 0;
 var gameTurns = 1;
 var player_1;
 var player_2;
-var choice = "";
-var losses = 0;
-var name = "";
-var wins = 0;
+var choice;
+var losses;
+var name;
+var wins;
 
 function firstPlayer(){  
   $("#add-player").on("click", function(event){
     event.preventDefault();
-    p1name = $("#player-name").val().trim();
-    console.log("This is p1: " + p1name)
-    playersRef.child("player_1").update({
-      losses: 0,
+    p1name = $("#player-name").val().trim();    
+    playersRef.child("player_1").set({ 
+      choice: "",
+      losses: 0,     
       name: p1name,
       wins: 0
     });
+    playersRef.child("player_2").set({
+      choice: "",
+      losses: 0,
+      name: "",
+      wins: 0
+    }); 
+
     playersRef.child("player_1/name").on("value", function(snapshot) {        
       $("#player1").html(snapshot.val());
       p1name = snapshot.val();     
@@ -52,13 +59,11 @@ function firstPlayer(){
 function secondPlayer(){
   $("#add-player").on("click", function(event){
     event.preventDefault();
-    p2name = $("#player-name").val().trim();
-    console.log("This is p2: " + p2name)
+    p2name = $("#player-name").val().trim();    
     playersRef.child("player_2").update({
-      losses: 0,
-      name: p2name,
-      wins: 0
+      name: p2name      
     });
+
     playersRef.child("player_2/name").on("value", function(snapshot) {        
       $("#player2").html(snapshot.val());
       p2name = snapshot.val();     
@@ -178,6 +183,7 @@ function newGame(){
 };
 
 firstPlayer();
+
 
 
 
