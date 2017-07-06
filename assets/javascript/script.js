@@ -39,7 +39,10 @@ function firstPlayer(){
       name: p1name,
       wins: 0
     });
-    $("#player1").text(p1name);          
+    playersRef.child("player_1/name").on("value", function(snapshot) {        
+      $("#player1").html(snapshot.val());
+      p1name = snapshot.val();     
+    });         
     $("#player-name").val("");  
     $("#add-player").off("click");
     secondPlayer(); 
@@ -56,7 +59,10 @@ function secondPlayer(){
       name: p2name,
       wins: 0
     });
-    $("#player2").text(p2name);
+    playersRef.child("player_2/name").on("value", function(snapshot) {        
+      $("#player2").html(snapshot.val());
+      p2name = snapshot.val();     
+    });    
     $("#player-name").val("");  
     $("#add-player").off("click");
     newGame();  
@@ -145,11 +151,13 @@ function newGame(){
   $("li").on("click", function(event) {
     event.preventDefault();
     p1choice = $(this).html();
-    console.log(p1choice);
     playersRef.child("player_1").update({
       choice: p1choice
     });
-    $("#player1Choice").html("<span class='highLight'>" + p1choice + "</span>");
+    playersRef.child("player_1/choice").on("value", function(snapshot) {
+      $("#player1Choice").html("<span class='highLight'>" + snapshot.val() + "</span>");
+      p1choice = snapshot.val();     
+    });
 
     for(var j = 0; j < gameChoices.length; j++) {
       $("#player2Choice").append("<li>" + gameChoices[j] + "</li>");
@@ -157,11 +165,13 @@ function newGame(){
     $("li").on("click", function(event) {
       event.preventDefault();
       p2choice = $(this).html();
-      console.log(p2choice);
       playersRef.child("player_2").update({
         choice: p2choice
       });
-      $("#player2Choice").html("<span class='highLight'>" + p2choice + "</span>");
+      playersRef.child("player_2/choice").on("value", function(snapshot) {        
+        $("#player2Choice").html("<span class='highLight'>" + snapshot.val() + "</span>");
+        p2choice = snapshot.val();     
+      });
       evaluation(p1choice, p2choice);
     });
   });        
@@ -170,6 +180,5 @@ function newGame(){
 firstPlayer();
 
 
-  
 
   
