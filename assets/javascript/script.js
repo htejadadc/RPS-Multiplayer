@@ -22,8 +22,6 @@ var p1losses = 0;
 var p2wins = 0;
 var p2losses = 0;
 var gameTurns = 1;
-var player_1;
-var player_2;
 var choice;
 var losses;
 var name;
@@ -111,22 +109,22 @@ function evaluation(x, y) {
   }
 
   $("#p1wins").html(p1wins); 
-  playersRef.child("player_1").update({
+  playersRef.ref("players/1/").update({
     wins: p1wins
   });  
 
   $("#p1losses").html(p1losses);   
-  playersRef.child("player_1").update({
+  playersRef.ref("players/1/").update({
     losses: p1losses
   });
  
   $("#p2wins").html(p2wins);  
-  playersRef.child("player_2").update({
+  playersRef.ref("players/2/").update({
     wins: p2wins
   });  
 
   $("#p2losses").html(p2losses);  
-  playersRef.child("player_2").update({
+  playersRef.ref("players/2/").update({
     losses: p2losses
   }); 
 
@@ -153,10 +151,10 @@ function newGame(){
   $("li").on("click", function(event) {
     event.preventDefault();
     p1choice = $(this).html();
-    playersRef.child("player_1").update({
+    playersRef.ref("players/1/").update({
       choice: p1choice
     });
-    playersRef.child("player_1/choice").on("value", function(snapshot) {
+    playersRef.ref("players/1/choice").on("value", function(snapshot) {
       $("#player1Choice").html("<span class='highLight'>" + snapshot.val() + "</span>");
       p1choice = snapshot.val();     
     });
@@ -167,10 +165,10 @@ function newGame(){
     $("li").on("click", function(event) {
       event.preventDefault();
       p2choice = $(this).html();
-      playersRef.child("player_2").update({
+      playersRef.ref("players/2/").update({
         choice: p2choice
       });
-      playersRef.child("player_2/choice").on("value", function(snapshot) {        
+      playersRef.ref("players/2/choice").on("value", function(snapshot) {        
         $("#player2Choice").html("<span class='highLight'>" + snapshot.val() + "</span>");
         p2choice = snapshot.val();     
       });
