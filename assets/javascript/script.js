@@ -1,17 +1,17 @@
 var config = {
-    apiKey: "AIzaSyAdeN55JOHlZn7gB9-vgollpibvKG99DvA",
-    authDomain: "rps-multiplayer-60d85.firebaseapp.com",
-    databaseURL: "https://rps-multiplayer-60d85.firebaseio.com",
-    projectId: "rps-multiplayer-60d85",
-    storageBucket: "rps-multiplayer-60d85.appspot.com",
-    messagingSenderId: "807690137599"
+    apiKey: "AIzaSyDYXoKct-N1GG2aGWgjbTNY1NPKbKeW7xs",
+    authDomain: "rps-firebase-8f52c.firebaseapp.com",
+    databaseURL: "https://rps-firebase-8f52c.firebaseio.com",
+    projectId: "rps-firebase-8f52c",
+    storageBucket: "rps-firebase-8f52c.appspot.com",
+    messagingSenderId: "374666921232"
   };
 
 firebase.initializeApp(config);
 
-var playersRef = firebase.database().ref("players");
-var chatRef = firebase.database().ref("chat");
-var turnsRef = firebase.database().ref("turns");
+var playersRef = firebase.database();
+var playersdbRef = playersRef.ref().child("players");
+var chatdbRef = playersRef.ref().child("chat");
 var gameChoices = ["Rock", "Paper", "Scissors"];
 var p1name = "";
 var p2name = "";
@@ -33,22 +33,16 @@ function firstPlayer(){
   $("#add-player").on("click", function(event){
     event.preventDefault();
     p1name = $("#player-name").val().trim();    
-    playersRef.child("player_1").set({ 
+    playersdbRef.child('1').set({
       choice: "",
-      losses: 0,     
+      losses: 0,
       name: p1name,
       wins: 0
     });
-    playersRef.child("player_2").set({
-      choice: "",
-      losses: 0,
-      name: "",
-      wins: 0
-    }); 
-
-    playersRef.child("player_1/name").on("value", function(snapshot) {        
-      $("#player1").html(snapshot.val());
-      p1name = snapshot.val();     
+    playersRef.ref("players/1/").on("value", function(snapshot) { 
+      console.log(snapshot.val().name);
+      $("#player1").html(snapshot.val().name);
+      p1name = snapshot.val().name;          
     });         
     $("#player-name").val("");  
     $("#add-player").off("click");
@@ -60,13 +54,16 @@ function secondPlayer(){
   $("#add-player").on("click", function(event){
     event.preventDefault();
     p2name = $("#player-name").val().trim();    
-    playersRef.child("player_2").update({
-      name: p2name      
+    playersdbRef.child('2').set({
+      choice: "",
+      losses: 0,
+      name: p2name,
+      wins: 0
     });
-
-    playersRef.child("player_2/name").on("value", function(snapshot) {        
-      $("#player2").html(snapshot.val());
-      p2name = snapshot.val();     
+    playersRef.ref("players/2/").on("value", function(snapshot) {
+      console.log(snapshot.val().name);        
+      $("#player2").html(snapshot.val().name);
+      p2name = snapshot.val().name;     
     });    
     $("#player-name").val("");  
     $("#add-player").off("click");
@@ -181,6 +178,23 @@ function newGame(){
     });
   });        
 };
+
+$(function() {
+
+  $("#button").on("click", function (event) {    
+    event.preventDefault();
+    var messageNew = $("#message-input").val();
+    chatdbRef.push({name:p1name, message:messageNew});
+    $("#message-input").val("");
+  });
+
+  chatdbRef.limitToLast(7).on("child_added", function (snapshot) {
+      var messagefire = snapshot.val();
+      var messageElement = $("<div/>").text(messagefire.name + ": " + messagefire.message);
+      messageElement.appendTo("#messageDisplay");
+      $("#messageDisplay").scrollTop($("#messageDisplay")[0].scrollHeight);
+  });
+});
 
 firstPlayer();
 

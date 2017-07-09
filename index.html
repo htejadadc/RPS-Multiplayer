@@ -4,40 +4,46 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-    <title>RPS Firebase</title>
+    <title>RPS Multiplayer</title>
+    <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
   </head>
   <body>
-    <h1>Rock Paper Scissors</h1>
-    <div id="game">
-      <form id="form-entry">
-        <label for="player-name"></label>
-        <input type="text" id="player-name" value="" placeholder="Name"></input>
-        <input type="submit" id="add-player" value="Start">
-      </form>
-      <div id="container">
-        <div class="box">
-          <div id="player1">Waiting for Player 1</div>
-          <div id="player1Choice"></div>
-          <div id="player1Count"></div>
-          <div class="score">Wins: <span id="p1wins">0</span> Losses: <span id="p1losses">0</span></div>
-        </div>
-        <div class="box">
-          <div id="player"></div>    
-          <div id="results"></div>      
-        </div>
-        <div class="box">
-          <div id="player2">Waiting for Player 2</div>
-          <div id="player2Choice"></div>
-          <div id="player2Count"></div>
-          <div class="score">Wins: <span id="p2wins">0</span> Losses: <span id="p2losses">0</span></div>
-        </div>        
+  <h1>Rock Paper Scissors</h1>
+  <div id="game">
+    <form id="form-entry">
+      <label for="player-name"></label>
+      <input type="text" id="player-name" value="" placeholder="Name"></input>
+      <input type="submit" id="add-player" value="Start">
+    </form>
+    <div id="container">
+      <div class="box">
+        <div id="player1">Waiting for Player 1</div>
+        <div id="player1Choice"></div>
+        <div id="player1Count"></div>
+        <div class="score">Wins: <span id="p1wins">0</span> Losses: <span id="p1losses">0</span></div>
       </div>
+      <div class="box">
+        <div id="player"></div>    
+        <div id="results"></div>      
+      </div>
+      <div class="box">
+        <div id="player2">Waiting for Player 2</div>
+        <div id="player2Choice"></div>
+        <div id="player2Count"></div>
+        <div class="score">Wins: <span id="p2wins">0</span> Losses: <span id="p2losses">0</span></div>
+      </div>        
     </div>
-  <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
-  <script src="/__/firebase/4.1.3/firebase-app.js"></script>
-  <script src="/__/firebase/4.1.3/firebase-auth.js"></script>
-  <script src="/__/firebase/4.1.3/firebase-database.js"></script>
-  <script src="/__/firebase/4.1.3/firebase-messaging.js"></script>
+  </div> 
+  <br> <br>
+  <div class="wrapper"> 
+    <div id="messageDisplay"> </div>
+    <section id="contentForm">
+        <label for="message"></label>
+        <input type="message" id="message-input">
+        <input type="submit" id="button" value="Send">
+    </section>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript" src="assets/javascript/script.js"></script>
   </body>

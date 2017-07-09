@@ -72,3 +72,30 @@ li:hover {
 #results {
 	font-size: 50px;
 }
+
+.wrapper {
+	width: 500px;
+	margin: 0 auto;	
+}
+
+#messageDisplay {
+	height: 125px;
+	max-width: 100%;
+	padding: 10px;
+	background-color: white;
+	overflow-y: scroll;
+	text-align: left;
+	font-size: 15px;
+	margin: 5px auto;
+	position: relative;
+}
+
+#contentForm {
+	display: flex;
+}
+
+#message-input {
+	flex: 1;
+}
+
+
