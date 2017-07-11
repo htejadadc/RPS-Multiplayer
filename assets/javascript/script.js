@@ -36,9 +36,7 @@ function resetGame() {
 };
 
 function startOver(){    
-  gameTurns = 1;
-  var p1iteration = false;
-  var p2iteration = false;
+  gameTurns = 1;  
   setTimeout(newGame, 3000);
 };
 
@@ -176,6 +174,8 @@ function secondplayerChoice() {
 
 function evaluation(x, y) {
   
+  var p1iteration = false;
+  var p2iteration = false;
   if ((x === "Rock") || (x === "Paper") || (x === "Scissors")) {
     if ((x === "Rock") && (y === "Scissors")) {
       p1wins++;
