@@ -51,58 +51,6 @@ function newGame() {
   firstplayerChoice();          
 };
 
-playersRef.ref("players/1/name").on("value", function(snapshot) { 
-  if (snapshot.val()) {
-    console.log(snapshot.val());
-    $("#player1").html(snapshot.val());
-    p1name = snapshot.val();  
-  }        
-});   
-
-playersRef.ref("players/2/name").on("value", function(snapshot) {
-  if (snapshot.val()) {
-    console.log(snapshot.val());        
-    $("#player2").html(snapshot.val());
-    p2name = snapshot.val();    
-  } 
-});    
-
-playersRef.ref("players/1/choice").on("value", function(snapshot) {  
-  if (snapshot.val()) {
-    console.log(snapshot.val()); 
-    $("#player1Choice").html("<span class='highLight'>" + snapshot.val() + "</span>");
-    p1choice = snapshot.val();   
-  }  
-});
-
-playersRef.ref("players/2/choice").on("value", function(snapshot) {      
-  if (snapshot.val()) {
-    console.log(snapshot.val());
-    $("#player2Choice").html("<span class='highLight'>" + snapshot.val() + "</span>");
-    p2choice = snapshot.val(); 
-  }    
-});
-
-playersRef.ref("players/1/").on("value", function(snapshot) {
-  if (snapshot.val()) {
-    console.log(snapshot.val());        
-    $("#p1wins").html(snapshot.val().wins);
-    $("#p1losses").html(snapshot.val().losses);
-    p1wins = snapshot.val().wins;    
-    p1losses = snapshot.val().losses;   
-  }
-});  
-
-playersRef.ref("players/2/").on("value", function(snapshot) {
-  if (snapshot.val()) {
-    console.log(snapshot.val());        
-    $("#p2wins").html(snapshot.val().wins);
-    $("#p2losses").html(snapshot.val().losses);
-    p2wins = snapshot.val().wins;     
-    p2losses = snapshot.val().losses;     
-  }
-});   
-
 function firstPlayer() {  
   
   $("#add-player").on("click", function(event) {
@@ -234,19 +182,71 @@ function evaluation(x, y) {
   playersRef.ref("players/2/").update({
     losses: p2losses
   });     
- 
-  if (p1iteration === true) {
+  
+  startOver();
+};
+
+playersRef.ref("players/1/name").on("value", function(snapshot) { 
+  if (snapshot.val()) {
+    console.log(snapshot.val());
+    $("#player1").html(snapshot.val());
+    p1name = snapshot.val();  
+  }        
+});   
+
+playersRef.ref("players/2/name").on("value", function(snapshot) {
+  if (snapshot.val()) {
+    console.log(snapshot.val());        
+    $("#player2").html(snapshot.val());
+    p2name = snapshot.val();    
+  } 
+});    
+
+playersRef.ref("players/1/choice").on("value", function(snapshot) {  
+  if (snapshot.val()) {
+    console.log(snapshot.val()); 
+    $("#player1Choice").html("<span class='highLight'>" + snapshot.val() + "</span>");
+    p1choice = snapshot.val();   
+  }  
+});
+
+playersRef.ref("players/2/choice").on("value", function(snapshot) {      
+  if (snapshot.val()) {
+    console.log(snapshot.val());
+    $("#player2Choice").html("<span class='highLight'>" + snapshot.val() + "</span>");
+    p2choice = snapshot.val(); 
+  }    
+});
+
+playersRef.ref("players/1/").on("value", function(snapshot) {
+  if (snapshot.val()) {
+    console.log(snapshot.val());        
+    $("#p1wins").html(snapshot.val().wins);
+    $("#p1losses").html(snapshot.val().losses);
+    p1wins = snapshot.val().wins;    
+    p1losses = snapshot.val().losses;   
+  }
+
+  if (snapshot.val().wins) {
     $("#player").html(p1name);
     $("#results").html("Wins!");
   }
 
-  if (p2iteration === true) {
+  if (snapshot.val().losses) {
     $("#player").html(p2name);
     $("#results").html("Wins!");
   }
+});  
 
-  startOver();
-};
+playersRef.ref("players/2/").on("value", function(snapshot) {
+  if (snapshot.val()) {
+    console.log(snapshot.val());        
+    $("#p2wins").html(snapshot.val().wins);
+    $("#p2losses").html(snapshot.val().losses);
+    p2wins = snapshot.val().wins;     
+    p2losses = snapshot.val().losses;     
+  }
+});   
 
 $(function() {
 
