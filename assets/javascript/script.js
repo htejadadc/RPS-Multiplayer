@@ -23,8 +23,7 @@ var p1losses = 0;
 var p2wins = 0;
 var p2losses = 0;
 var gameTurns = 0;
-var p1iteration = false;
-var p2iteration = false;
+var tiegameIteration = false;
 
 playersconnectedRef.on("value", function(snap) {
   console.log(snap.val());
@@ -128,38 +127,35 @@ function secondplayerChoice() {
   });  
 };
 
-function evaluation(x, y) {
+function evaluation(x, y) {  
   
-  var p1iteration = false;
-  var p2iteration = false;
+  tiegameIteration = false;
+
   if ((x === "Rock") || (x === "Paper") || (x === "Scissors")) {
     if ((x === "Rock") && (y === "Scissors")) {
       p1wins++;
-      p2losses++;  
-      p1iteration = true;        
+      p2losses++;           
     } else if ((x === "Rock") && (y === "Paper")) {
       p2wins++;
-      p1losses++;
-      p2iteration = true; 
+      p1losses++;       
     } else if ((x === "Scissors") && (y === "Rock")) {
       p2wins++;
-      p1losses++;
-      p2iteration = true;
+      p1losses++;      
     } else if ((x === "Scissors") && (y === "Paper")) {
       p1wins++;
-      p2losses++;
-      p1iteration = true; 
+      p2losses++;      
     } else if ((x === "Paper") && (y === "Rock")) {
       p1wins++;
-      p2losses++;
-      p1iteration = true; 
+      p2losses++;     
     } else if ((x === "Paper") && (y === "Scissors")) {
       p2wins++;
-      p1losses++;
-      p2iteration = true;
+      p1losses++;      
     } else if (x === y) {
-      $("#player").html("Tie");
-      $("#results").html("Game!");
+      tiegameIteration = true;
+      if (tiegameIteration === true) {
+        $("#player").html("Tie");
+        $("#results").html("Game!");
+      }    
     }
   }
 
@@ -218,36 +214,63 @@ playersRef.ref("players/2/choice").on("value", function(snapshot) {
   }    
 });
 
-playersRef.ref("players/1/").on("value", function(snapshot) {
+playersRef.ref("players/1/wins").on("value", function(snapshot) {
   if (snapshot.val()) {
     console.log(snapshot.val());        
-    $("#p1wins").html(snapshot.val().wins);
-    $("#p1losses").html(snapshot.val().losses);
-    p1wins = snapshot.val().wins;    
-    p1losses = snapshot.val().losses;   
+    $("#p1wins").html(snapshot.val());    
+    p1wins = snapshot.val();        
   }
 
-  if (snapshot.val().wins) {
+  if (snapshot.val()) {
     $("#player").html(p1name);
     $("#results").html("Wins!");
   }
+  
+});  
 
-  if (snapshot.val().losses) {
+playersRef.ref("players/1/losses").on("value", function(snapshot) {
+  if (snapshot.val()) {
+    console.log(snapshot.val());           
+    $("#p1losses").html(snapshot.val());   
+    p1losses = snapshot.val();   
+  }  
+
+  if (snapshot.val()) {
     $("#player").html(p2name);
     $("#results").html("Wins!");
   }
+
 });  
 
-playersRef.ref("players/2/").on("value", function(snapshot) {
+playersRef.ref("players/2/wins").on("value", function(snapshot) {
   if (snapshot.val()) {
     console.log(snapshot.val());        
-    $("#p2wins").html(snapshot.val().wins);
-    $("#p2losses").html(snapshot.val().losses);
-    p2wins = snapshot.val().wins;     
-    p2losses = snapshot.val().losses;     
+    $("#p2wins").html(snapshot.val());    
+    p2wins = snapshot.val();         
   }
+
 });   
 
+playersRef.ref("players/2/losses").on("value", function(snapshot) {
+  if (snapshot.val()) {
+    console.log(snapshot.val());    
+    $("#p2losses").html(snapshot.val());         
+    p2losses = snapshot.val();     
+  }
+
+});
+/*
+playersRef.ref("players/turn").on("value", function(snapshot) {
+  if (snapshot.val() === 3) {
+    console.log(snapshot.val());    
+    if (tiegameIteration === true) {
+      $("#player").html("Tie");
+      $("#results").html("Game!");
+    }    
+  }
+
+});   
+*/
 $(function() {
 
   $("#button").on("click", function (event) {    
