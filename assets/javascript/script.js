@@ -23,7 +23,6 @@ var p1losses = 0;
 var p2wins = 0;
 var p2losses = 0;
 var gameTurns = 1;
-var tiegameIteration = false;
 
 var rpsGame = {
   playersHandler: function(event) {
@@ -97,8 +96,7 @@ function playersEntry() {
 };
 
 function startOver(){    
-  gameTurns = 1; 
-  tiegameIteration = false; 
+  gameTurns = 1;   
   setTimeout(nextGame, 3000);
 };
 
@@ -176,10 +174,8 @@ function evaluation(x, y) {
       p2losses++;     
     } else if ((x === "Paper") && (y === "Scissors")) {
       p2wins++;
-      p1losses++;            
-    } else if (x === y) {
-      tiegameIteration = true;           
-    }
+      p1losses++;      
+    } 
   }
 
   playersRef.ref().update({      
@@ -243,7 +239,12 @@ playersRef.ref("players/2/choice").on("value", function(snapshot) {
   if (snapshot.val()) {
     console.log(snapshot.val());
     $("#player2Choice").html("<span class='highLight'>" + snapshot.val() + "</span>");
-    p2choice = snapshot.val();        
+    p2choice = snapshot.val(); 
+      
+    if (p1choice === p2choice) {
+      $("#player").html("Tie");
+      $("#results").html("Game!");
+    }     
   }    
 });
 
@@ -295,8 +296,7 @@ playersRef.ref("players/2/losses").on("value", function(snapshot) {
 
 playersRef.ref("turn").on("value", function(snapshot) {
   console.log(snapshot.val());  
-  console.log(tiegameIteration);  
-
+   
   if (snapshot.val() === 1) {
 
     $("#player1Choice").empty();
@@ -319,11 +319,7 @@ playersRef.ref("turn").on("value", function(snapshot) {
   if (snapshot.val() === 3) {
     $("#player1Choice").show();
     $("#player2Choice").show();
-
-    if (tiegameIteration === true) {
-      $("#player").html("Tie");
-      $("#results").html("Game!");   
-    }
+    gameTurns = snapshot.val();
   }
 
 });   
