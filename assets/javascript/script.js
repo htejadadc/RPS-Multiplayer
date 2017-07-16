@@ -22,56 +22,26 @@ var p1wins = 0;
 var p1losses = 0;
 var p2wins = 0;
 var p2losses = 0;
-var gameTurns = 0;
+var gameTurns = 1;
 var tiegameIteration = false;
 
-playersconnectedRef.on("value", function(snap) {
-  console.log(snap.val());
-});
+var rpsGame = {
+  playersHandler: function(event) {
+    event.preventDefault();
+    console.log(gameTurns);
+    if (event.data.newPlayer) {    
+      p1name = $("#player-name").val().trim();    
+      playersdbRef.child('1').set({      
+        losses: 0,
+        name: p1name,
+        wins: 0
+      });
+      
+      $("#player2-messages").hide();
+      $("#form-entry").html("Hi " + p1name + "! You are Player 1");           
+    
+    } else {
 
-function resetGame() {  
-  playersRef.ref().remove();
-  firstPlayer();  
-};
-
-function startOver(){    
-  gameTurns = 1; 
-  tiegameIteration = false; 
-  setTimeout(newGame, 3000);
-};
-
-function newGame() {  
-  playersRef.ref().update({      
-    turn: gameTurns
-  }); 
-  $("#player1Choice").empty();
-  $("#player2Choice").empty();
-  $("#player").empty();
-  $("#results").empty();
-  firstplayerChoice();          
-};
-
-function firstPlayer() {  
-  
-  $("#add-player").on("click", function(event) {
-    event.preventDefault();    
-    p1name = $("#player-name").val().trim();    
-    playersdbRef.child('1').set({      
-      losses: 0,
-      name: p1name,
-      wins: 0
-    });
-    $("#player-name").val("");  
-    $("#add-player").off("click");      
-    secondPlayer();
-  }); 
-};
-
-function secondPlayer(){
- 
-  $("#add-player").on("click", function(event) {
-    event.preventDefault();  
-    gameTurns++; 
     p2name = $("#player-name").val().trim();    
     playersdbRef.child('2').set({      
       losses: 0,
@@ -81,10 +51,64 @@ function secondPlayer(){
     playersRef.ref().update({      
       turn: gameTurns
     });      
-    $("#player-name").val("");  
-    $("#add-player").off("click");
-    newGame();
+          
+    $("#player1Choice").hide();
+    $("#player1-messages").hide();
+    $("#button-player1").hide();
+    $("#button-player2").show(); 
+    $("#form-entry").html("Hi " + p2name + "! You are Player 2"); 
+
+    }  
+  },
+  buttonsHandler: function(event) {
+    event.preventDefault();
+    if (event.data.newMessage) {
+      var messageText = $("#message-input").val();
+      chatdbRef.push({
+        name: p1name, 
+        message: messageText
+      });
+      $("#message-input").val("");
+    } else {
+      var messageText = $("#message-input").val();
+      chatdbRef.push({
+        name: p2name, 
+        message: messageText
+      });
+      $("#message-input").val("");
+    }
+  }
+};
+
+playersconnectedRef.on("value", function(snap) {
+  console.log(snap.val());
+});
+
+function resetGame() {  
+  playersRef.ref().remove();
+  $("#add-player2").hide();  
+  $("#button-player2").hide(); 
+  playersEntry();
+};
+
+function playersEntry() {
+  $("#add-player1").click({newPlayer: true}, rpsGame.playersHandler);
+  $("#add-player2").click({newPlayer: false}, rpsGame.playersHandler);
+};
+
+function startOver(){    
+  gameTurns = 1; 
+  tiegameIteration = false; 
+  setTimeout(nextGame, 3000);
+};
+
+function nextGame() {  
+
+  $("#player1Choice").hide();
+  playersRef.ref().update({      
+    turn: gameTurns
   });  
+           
 };
 
 function firstplayerChoice() {
@@ -92,17 +116,21 @@ function firstplayerChoice() {
   for(var i = 0; i < gameChoices.length; i++) {
     $("#player1Choice").append("<li>" + gameChoices[i] + "</li>");
   }
+
   $("li").on("click", function(event) {
     event.preventDefault();
     gameTurns++;
+    console.log(gameTurns);
     p1choice = $(this).html();
     playersRef.ref("players/1/").update({
       choice: p1choice
     });
     playersRef.ref().update({      
       turn: gameTurns
-    }); 
-    secondplayerChoice();
+    });    
+
+  $("#player2Choice").hide();
+
   });  
 };
 
@@ -111,19 +139,21 @@ function secondplayerChoice() {
   for(var j = 0; j < gameChoices.length; j++) {
     $("#player2Choice").append("<li>" + gameChoices[j] + "</li>");
   }
+  
   $("li").on("click", function(event) {
     event.preventDefault();
     gameTurns++;
     p2choice = $(this).html();
     playersRef.ref("players/2/").update({
       choice: p2choice
-    });    
-    
+    });        
+
     evaluation(p1choice, p2choice); 
     console.log(p1choice)
     console.log(p2choice)
 
   });  
+
 };
 
 function evaluation(x, y) {    
@@ -146,9 +176,9 @@ function evaluation(x, y) {
       p2losses++;     
     } else if ((x === "Paper") && (y === "Scissors")) {
       p2wins++;
-      p1losses++;      
+      p1losses++;            
     } else if (x === y) {
-      tiegameIteration = true;      
+      tiegameIteration = true;           
     }
   }
 
@@ -184,6 +214,8 @@ playersRef.ref("players/1/name").on("value", function(snapshot) {
     console.log(snapshot.val());
     $("#player1").html(snapshot.val());
     p1name = snapshot.val();  
+    $("#add-player1").hide();
+    $("#add-player2").show();    
   }        
 });   
 
@@ -192,14 +224,18 @@ playersRef.ref("players/2/name").on("value", function(snapshot) {
     console.log(snapshot.val());        
     $("#player2").html(snapshot.val());
     p2name = snapshot.val();    
-  } 
+
+    playersRef.ref().update({      
+      turn: gameTurns
+    });  
+  }
 });    
 
 playersRef.ref("players/1/choice").on("value", function(snapshot) {  
   if (snapshot.val()) {
     console.log(snapshot.val()); 
     $("#player1Choice").html("<span class='highLight'>" + snapshot.val() + "</span>");
-    p1choice = snapshot.val();   
+    p1choice = snapshot.val();      
   }  
 });
 
@@ -207,7 +243,7 @@ playersRef.ref("players/2/choice").on("value", function(snapshot) {
   if (snapshot.val()) {
     console.log(snapshot.val());
     $("#player2Choice").html("<span class='highLight'>" + snapshot.val() + "</span>");
-    p2choice = snapshot.val(); 
+    p2choice = snapshot.val();        
   }    
 });
 
@@ -260,31 +296,50 @@ playersRef.ref("players/2/losses").on("value", function(snapshot) {
 playersRef.ref("turn").on("value", function(snapshot) {
   console.log(snapshot.val());  
   console.log(tiegameIteration);  
-  if (snapshot.val() === 3 && tiegameIteration === true) {     
-    $("#player").html("Tie");
-    $("#results").html("Game!");   
+
+  if (snapshot.val() === 1) {
+
+    $("#player1Choice").empty();
+    $("#player2Choice").empty();
+    $("#player").empty();
+    $("#results").empty(); 
+    $("#player1-messages").html("It's Your Turn!");   
+    $("#player2-messages").html("Waiting for " + p1name + " to choose");
+    gameTurns = snapshot.val();
+    firstplayerChoice(); 
+  }
+
+  if (snapshot.val() === 2) {
+    $("#player2-messages").html("It's Your Turn!");   
+    $("#player1-messages").html("Waiting for " + p2name + " to choose");
+    gameTurns = snapshot.val();
+    secondplayerChoice();
+  }
+
+  if (snapshot.val() === 3) {
+    $("#player1Choice").show();
+    $("#player2Choice").show();
+
+    if (tiegameIteration === true) {
+      $("#player").html("Tie");
+      $("#results").html("Game!");   
+    }
   }
 
 });   
 
 $(function() {
 
-  $("#button").on("click", function (event) {    
-    event.preventDefault();
-    var messageNew = $("#message-input").val();
-    chatdbRef.push({
-      name: p1name, 
-      message: messageNew
-    });
-    $("#message-input").val("");
+  $("#button-player1").click({newMessage: true}, rpsGame.buttonsHandler);
+  $("#button-player2").click({newMessage: false}, rpsGame.buttonsHandler);   
+  
+  chatdbRef.limitToLast(7).on("child_added", function (snapshot) {
+    var messagefire = snapshot.val();
+    var messageElement = $("<div/>").text(messagefire.name + ": " + messagefire.message);
+    messageElement.appendTo("#messageDisplay");
+    $("#messageDisplay").scrollTop($("#messageDisplay")[0].scrollHeight);
   });
 
-  chatdbRef.limitToLast(7).on("child_added", function (snapshot) {
-      var messagefire = snapshot.val();
-      var messageElement = $("<div/>").text(messagefire.name + ": " + messagefire.message);
-      messageElement.appendTo("#messageDisplay");
-      $("#messageDisplay").scrollTop($("#messageDisplay")[0].scrollHeight);
-  });
 });
 
 resetGame();
